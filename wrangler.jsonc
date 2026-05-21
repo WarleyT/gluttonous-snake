@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gluttonous-snake",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-05-20",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "snake-leaderboard",
+      "database_id": "3b4b89af-e889-4687-94da-b3bc681442f1"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gluttonous Snake</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-layout" aria-label="贪吃蛇游戏">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Gluttonous Snake</p>
+            <h1>贪吃蛇</h1>
+          </div>
+          <div class="score-strip" aria-label="游戏状态">
+            <div class="stat">
+              <span id="scoreLabel">分数</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span>个人最佳</span>
+              <strong id="personalBest">0</strong>
+            </div>
+            <div class="stat">
+              <span>全网最佳</span>
+              <strong id="bestScore">0</strong>
+            </div>
+            <div class="stat">
+              <span>长度</span>
+              <strong id="length">3</strong>
+            </div>
+          </div>
+        </header>
+
+        <div class="quick-cluster">
+          <div class="action-metrics" aria-label="速度和用时">
+            <div class="status-card">
+              <span>速度</span>
+              <strong id="speed">1.0x</strong>
+            </div>
+            <div class="status-card">
+              <span>用时</span>
+              <strong id="timer">00:00</strong>
+            </div>
+          </div>
+          <div class="quick-actions" aria-label="游戏快捷操作">
+            <button class="icon-button" id="pauseBtn" type="button" aria-label="暂停或继续" title="暂停或继续">
+              <span id="pauseIcon">Ⅱ</span>
+            </button>
+            <button class="icon-button" id="restartBtn" type="button" aria-label="重新开始" title="重新开始">↻</button>
+            <button class="icon-button" id="soundBtn" type="button" aria-label="声音开关" title="声音开关">♪</button>
+          </div>
+        </div>
+
+        <div class="play-area">
+          <canvas id="gameCanvas" width="720" height="720" aria-label="游戏棋盘"></canvas>
+          <div class="overlay" id="overlay">
+            <div class="overlay-panel">
+              <p id="overlayLabel">准备开始</p>
+              <h2 id="overlayTitle">能量点亮起，蛇影出发</h2>
+              <form class="score-form" id="scoreForm">
+                <label for="playerName">昵称</label>
+                <div class="score-entry">
+                  <input id="playerName" name="playerName" maxlength="12" autocomplete="nickname" placeholder="输入昵称" />
+                  <button class="secondary-button" type="submit">录入分数</button>
+                </div>
+              </form>
+              <p class="score-feedback" id="scoreFeedback"></p>
+              <button class="primary-button" id="primaryAction" type="button">开始游戏</button>
+            </div>
+          </div>
+        </div>
+
+        <nav class="touch-pad" aria-label="移动端方向控制">
+          <button data-dir="up" aria-label="向上">▲</button>
+          <button data-dir="left" aria-label="向左">◀</button>
+          <button data-dir="down" aria-label="向下">▼</button>
+          <button data-dir="right" aria-label="向右">▶</button>
+        </nav>
+
+        <aside class="control-panel">
+          <div class="setting-group">
+            <label for="modeSelect">模式</label>
+            <select id="modeSelect">
+              <option value="classic">经典</option>
+              <option value="wrap">穿墙</option>
+              <option value="rush">极速</option>
+              <option value="feast">狂吃</option>
+            </select>
+          </div>
+
+          <div class="setting-group">
+            <label for="themeSelect">主题</label>
+            <select id="themeSelect">
+              <option value="neon">霓虹</option>
+              <option value="mint">薄荷</option>
+              <option value="ember">余烬</option>
+              <option value="valentine" data-limited-theme>情人节（限定）</option>
+            </select>
+          </div>
+        </aside>
+
+        <section class="how-to-play">
+          <details>
+            <summary>玩法说明</summary>
+            <div class="rules-page">
+              <h2>游戏规则</h2>
+              <p>方向键、WASD、屏幕滑动或下方方向键都可以控制移动。长按当前方向或转向后的方向可以逐渐加速，松开恢复正常。吃到豆子加分并变长，撞墙或撞到自己则结束。</p>
+              <p>经典模式：撞墙会结束，节奏稳定，适合练习路线和控蛇。</p>
+              <p>穿墙模式：越过边界会从另一侧出现，更适合绕路续命。</p>
+              <p>极速模式：得分更高但初速更快，适合短局冲榜。</p>
+              <p>狂吃模式：可穿墙，开局 5 个豆子，苹果立刻出现且最多同时 2 个；速度提升更慢，金苹果一次增加 3 个豆子，豆子会一直增加到棋盘放满为止，红苹果磁力时间更长。</p>
+              <p>达到 200 分后，场上会定期出现带倒计时的随机苹果：绿色按倒计时秒数减短蛇身，蓝色放慢速度，金色让豆子数量加一，红色让蛇头短暂吸附周围 5x5 范围内的豆子和倒计时苹果。除狂吃模式外，每跨过 250 分会进入 10 秒奖励关卡，奖励豆每个 2 分且不会让蛇变长。</p>
+              <p>每局结束后可以录入昵称进入共享排行榜，前 20 名会展示在页面底部。</p>
+            </div>
+          </details>
+        </section>
+
+        <section class="leaderboard" aria-labelledby="leaderboardTitle">
+          <div class="leaderboard-header">
+            <div>
+              <p class="eyebrow">Leaderboard</p>
+              <h2 id="leaderboardTitle">排行榜</h2>
+            </div>
+            <span>当前模式前 20 名</span>
+          </div>
+          <div class="leaderboard-tabs" aria-label="排行榜模式">
+            <button type="button" data-leaderboard-mode="classic">经典</button>
+            <button type="button" data-leaderboard-mode="wrap">穿墙</button>
+            <button type="button" data-leaderboard-mode="rush">极速</button>
+            <button type="button" data-leaderboard-mode="feast">狂吃</button>
+          </div>
+          <ol id="leaderboardList" class="leaderboard-list"></ol>
+        </section>
+      </section>
+      <div class="medal-reward" id="medalReward" aria-live="polite"></div>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>

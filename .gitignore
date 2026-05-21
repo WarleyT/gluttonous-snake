@@ -1,0 +1,9 @@
+.netlify/
+node_modules/
+.wrangler/
+.wrangler-login*.log
+public/
+artifacts/
+backups/
+*.local
+.DS_Store
