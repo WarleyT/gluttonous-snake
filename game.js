@@ -949,9 +949,13 @@ function drawMagnetField() {
   if (!isMagnetActive()) return;
   const head = snake[0];
   const pulse = 0.5 + Math.sin(performance.now() / 95) * 0.25;
+  const magnetColor = getCssValue("--food");
 
   ctx.save();
-  ctx.strokeStyle = `rgba(255, 84, 112, ${0.32 + pulse * 0.18})`;
+  ctx.strokeStyle = magnetColor.replace(")", `, ${0.42 + pulse * 0.2})`).replace("rgb", "rgba");
+  if (magnetColor.startsWith("#")) {
+    ctx.strokeStyle = `rgba(224, 115, 92, ${0.42 + pulse * 0.2})`;
+  }
   ctx.lineWidth = 2;
   ctx.setLineDash([7, 6]);
 
@@ -973,12 +977,17 @@ function drawMagnetPulse() {
   const x = (head.x + 0.5) * cellSize;
   const y = (head.y + 0.5) * cellSize;
   const wave = Math.sin(performance.now() / 130);
+  const magnetColor = getCssValue("--food");
 
   ctx.save();
-  ctx.strokeStyle = "rgba(255, 84, 112, 0.72)";
-  ctx.fillStyle = "rgba(255, 84, 112, 0.14)";
+  ctx.strokeStyle = magnetColor;
+  ctx.fillStyle = magnetColor.replace(")", ", 0.18)").replace("rgb", "rgba");
+  if (magnetColor.startsWith("#")) {
+    ctx.strokeStyle = magnetColor;
+    ctx.fillStyle = "rgba(224, 115, 92, 0.18)";
+  }
   ctx.lineWidth = 3;
-  ctx.shadowColor = appleColors.red;
+  ctx.shadowColor = magnetColor;
   ctx.shadowBlur = 18;
 
   for (let i = 0; i < 3; i += 1) {
@@ -1025,10 +1034,10 @@ function drawBonusOverlay() {
     ctx.globalAlpha = alpha;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "900 30px sans-serif";
-    ctx.fillStyle = "rgba(255, 235, 246, 0.92)";
-    ctx.shadowColor = "rgba(255, 154, 197, 0.85)";
-    ctx.shadowBlur = 16;
+    ctx.font = "700 28px 'Chivo', sans-serif";
+    ctx.fillStyle = getCssValue("--snake-head");
+    ctx.shadowColor = "rgba(0,0,0,0.1)";
+    ctx.shadowBlur = 6;
     ctx.fillText("奖励关卡", canvas.width / 2, cellSize * 2.2);
     ctx.restore();
   }
@@ -1036,11 +1045,11 @@ function drawBonusOverlay() {
   if (isBonusActive(now)) {
     const seconds = Math.max(0, Math.ceil((bonusActiveUntil - now) / 1000));
     ctx.save();
-    ctx.globalAlpha = 0.24;
+    ctx.globalAlpha = 0.16;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "900 118px sans-serif";
-    ctx.fillStyle = "rgba(255, 235, 246, 0.72)";
+    ctx.font = "700 108px 'Fraunces', 'Georgia', serif";
+    ctx.fillStyle = getCssValue("--text");
     ctx.fillText(String(seconds), canvas.width / 2, canvas.height / 2);
     ctx.restore();
   }
@@ -1172,7 +1181,7 @@ function drawLoveNotes() {
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = "900 22px sans-serif";
+  ctx.font = "700 20px 'Chivo', sans-serif";
   for (const note of loveNotes) {
     note.age += 1;
     note.y += note.vy;
@@ -1182,12 +1191,12 @@ function drawLoveNotes() {
     const alpha = Math.max(0, Math.min(0.72, fadeIn * fadeOut * 0.72));
     if (alpha <= 0.01) continue;
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = "rgba(255, 128, 178, 0.18)";
+    ctx.fillStyle = "rgba(212, 120, 142, 0.22)";
     roundedRect(note.x - 92, note.y - 24, 184, 48, 24);
     ctx.fill();
-    ctx.fillStyle = "rgba(255, 235, 246, 0.92)";
-    ctx.shadowColor = "rgba(255, 92, 148, 0.75)";
-    ctx.shadowBlur = 14;
+    ctx.fillStyle = getCssValue("--snake-head");
+    ctx.shadowColor = "rgba(180, 74, 104, 0.3)";
+    ctx.shadowBlur = 8;
     ctx.fillText(note.text, note.x, note.y);
     ctx.shadowBlur = 0;
   }
